@@ -34,20 +34,25 @@ const login = async (req, res) => {
 
 // Register new user
 const insertUser = async (req, res) => {
-    const {u_id, u_name, u_pwd, u_email, u_addr, u_contact } = req.body;
+    const { u_id, u_name, u_pwd, u_email, u_addr, u_contact } = req.body;
 
     try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ u_email });
-        if (existingUser) {
-            return res.status(409).json({ message: 'User already present' });
+        // Check if user already exists by both u_email and u_name
+        const existingUserByEmail = await User.findOne({ u_email });
+        if (existingUserByEmail) {
+            return res.status(409).json({ message: 'Email already in use' });
+        }
+
+        const existingUserByName = await User.findOne({ u_name });
+        if (existingUserByName) {
+            return res.status(409).json({ message: 'Username already in use' });
         }
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(u_pwd, 10);
 
         // Create a new user
-        const useritem = new User({u_id, u_name, u_pwd: hashedPassword, u_email, u_addr, u_contact });
+        const useritem = new User({ u_id, u_name, u_pwd: hashedPassword, u_email, u_addr, u_contact });
 
         // Save new user
         const savedUser = await useritem.save();
