@@ -13,6 +13,22 @@ const products_all = async(req,res)=>{
         res.join({'message':error})
     }
 }
+const getProductById = async (req, res) => {
+    const p_id = req.params.id;
+    try {
+        const product = await Product.findOne({ p_id });
+        if (product) {
+            console.log('Product Found');
+            res.json(product);
+        } else {
+            console.log('Product Not Found');
+            res.status(404).send({ 'message': 'Product Not Found' });
+        }
+    } catch (error) {
+        console.log('Fetch Error :-', error);
+        res.status(400).send(error);
+    }
+};
 
 const insertProduct = async (req, res) => {
     const productitem = new Product(req.body);
@@ -73,6 +89,7 @@ const delete_product = async (req, res) => {
  
 module.exports = {
     products_all,
+    getProductById,
     insertProduct,
     update_product,
     delete_product
