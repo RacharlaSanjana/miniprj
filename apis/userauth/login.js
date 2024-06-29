@@ -31,9 +31,10 @@ const login = async (req, res) => {
     }
 };
 
+
 // Register new user
 const insertUser = async (req, res) => {
-    const { u_name, u_pwd, u_email, u_addr, u_contact } = req.body;
+    const {u_id, u_name, u_pwd, u_email, u_addr, u_contact } = req.body;
 
     try {
         // Check if user already exists
@@ -46,7 +47,7 @@ const insertUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(u_pwd, 10);
 
         // Create a new user
-        const useritem = new User({ u_name, u_pwd: hashedPassword, u_email, u_addr, u_contact });
+        const useritem = new User({u_id, u_name, u_pwd: hashedPassword, u_email, u_addr, u_contact });
 
         // Save new user
         const savedUser = await useritem.save();
