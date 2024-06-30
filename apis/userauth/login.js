@@ -51,7 +51,7 @@ const insertUser = async (req, res) => {
         // Save new user
         const savedUser = await useritem.save();
         console.log('User inserted');
-        res.status(201).json({ user: { u_name: savedUser.u_name, u_email: savedUser.u_email } });
+        res.status(201).json({auth: 'success', user: { u_name: savedUser.u_name, u_email: savedUser.u_email } });
 
     } catch (error) {
         console.error('Error inserting user:', error);
