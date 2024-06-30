@@ -24,7 +24,7 @@ const login = async (req, res) => {
             // If user is not found or passwords do not match
             res.status(401).json({ auth: 'failed', message: 'Invalid credentials' });
         }
-        console.log('Auth response sent',res);
+        console.log('Auth response sent');
     } catch (err) {
         console.error('Error in authentication:', err);
         res.status(500).json({ auth: 'failed', message: err.message });
