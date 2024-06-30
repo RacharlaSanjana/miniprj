@@ -1,25 +1,20 @@
 const express = require('express');
 const User = require('../../models/users');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');  // Import bcrypt for hashing passwords
 
-// Secret key for JWT
-const JWT_SECRET = 'AZMLNKCD'; // Replace with your secret key
-
-// Login route
 const login = async (req, res) => {
     const { u_name, u_pwd } = req.body;
 
     try {
         // Find the user with the given username
         const user = await User.findOne({ u_name });
-
-        if (user && await bcrypt.compare(u_pwd, user.u_pwd)) {  // Compare hashed password
-            // Generate a token
-            const token = jwt.sign({ id: user._id, u_name: user.u_name }, JWT_SECRET, { expiresIn: '1h' });
-
-            // Return the token and user details
-            res.json({ auth: 'success', token, user: { u_name: user.u_name, u_email: user.u_email } });
+        if(user && u_pwd===user.u_pwd)
+        {
+            res.json({ auth: 'success', user: { u_name: user.u_name, u_email: user.u_email } });
+        }
+        else if (user && await bcrypt.compare(u_pwd, user.u_pwd)) {
+            // If passwords match, return user details
+            res.json({ auth: 'success', user: { u_name: user.u_name, u_email: user.u_email } });
         } else {
             // If user is not found or passwords do not match
             res.status(401).json({ auth: 'failed', message: 'Invalid credentials' });
@@ -56,7 +51,7 @@ const insertUser = async (req, res) => {
         // Save new user
         const savedUser = await useritem.save();
         console.log('User inserted');
-        res.status(201).json({ user: { u_name: savedUser.u_name, u_email: savedUser.u_email }, token: null });
+        res.status(201).json({ user: { u_name: savedUser.u_name, u_email: savedUser.u_email } });
 
     } catch (error) {
         console.error('Error inserting user:', error);
